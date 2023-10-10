@@ -57,15 +57,20 @@ def draw_info(title, artist, album, albumart_url):
 class GetCurrentlyPlaying():
 
     def __init__(self, username, scope):
-        self.token = util.prompt_for_user_token(username, scope)
-        #token = util.prompt_for_user_token(username,scope, client_id=client_id,client_secret=client_secret,redirect_uri=redirect_uri)
+        self.username = username
+        self.scope = scope
+        self._token()
+
+    def _token(self):
+        self.token = util.prompt_for_user_token(self.username, self.scope)
+        ### token = util.prompt_for_user_token(username,scope, client_id=client_id,client_secret=client_secret,redirect_uri=redirect_uri)
         self.sp = spotipy.Spotify(auth=self.token)
 
     def song_info(self):
         try:
             results = self.sp.currently_playing()
         except spotipy.client.SpotifyException:
-            self.sp = spotipy.Spotify(auth=self.token)
+            self._token()
             results = self.sp.currently_playing()
         return results
 
